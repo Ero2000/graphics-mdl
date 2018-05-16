@@ -104,4 +104,20 @@ void my_main() {
   g.green = 0;
   g.blue = 0;
 
+  //reads the script (parses), fills symtab and op[] < can be found in parser.h
+  //command op[MAX_COMMANDS/512], and SYMTAB symtab[MAX_SYMBOLS/512]
+  //Make sure to CLEAR TMP BEFORE TRANSFORMATIONS AND POLYGONS WITH LASTCOL = 0
+  int i;
+  for (i = 0; i < lastop; i++){
+    switch(op[i].opcode){
+      case PUSH:
+	push(systems);
+	break;
+      case POP:
+	pop(systems);
+	break;
+      case sphere:
+	add_sphere(tmp, op[i].d[0], op[i].d[1], op[i].d[2], r);
+    }
+  }
 }
