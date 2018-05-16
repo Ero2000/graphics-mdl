@@ -112,61 +112,71 @@ void my_main() {
       case PUSH:
 	push(systems);
 	break;
+	
       case POP:
 	pop(systems);
 	break;
+	
       case ROTATE:
-	theta = op[i].degrees * (M_PI / 180);
-	if (op[i].axis == 0){
+	theta = op[i].op.rotate.degrees * (M_PI / 180);
+	if (op[i].op.rotate.axis == 0){
 	  tmp = make_rotX(theta);
 	}
-	else if (op[i].axis == 1){
+	else if (op[i].op.rotate.axis == 1){
 	  tmp = make_rotY(theta);
 	}
-	else if (op[i].axis == 2){
+	else if (op[i].op.rotate.axis == 2){
 	  tmp = make_rotZ(theta);
 	}
 	matrix_mult(peek(systems), tmp);
 	copy_matrix(tmp, peek(systems));
+	tmp->lastcol=0;
 	break;
+	
       case MOVE:
-	tmp = make_translate( op[i].d[0], op[i].d[1], op[i].d[2] );
+	tmp = make_translate( op[i].op.move.d[0], op[i].op.move.d[1], op[i].op.move.d[2] );
 	matrix_mult(peek(systems), tmp);
 	copy_matrix(tmp, peek(systems));
+	tmp->lastcol=0;
 	break;
+	
       case SCALE:
-	tmp = make_scale( op[i].d[0], op[i].d[1], op[i].d[2] );
+	tmp = make_scale( op[i].op.scale.d[0], op[i].op.scale.d[1], op[i].op.scale.d[2] );
         matrix_mult(peek(systems), tmp);
 	copy_matrix(tmp, peek(systems));
+	tmp->lastcol=0;
 	break;
+	
       case BOX:
-	add_box(tmp, op[i].d0[0], op[i].d0[1], op[i].d0[2],
-		op[i].d1[0], op[i].d1[1], op[i].d1[2]);
+	add_box(tmp, op[i].op.box.d0[0], op[i].op.box.d0[1], op[i].op.box.d0[2],
+		op[i].op.box.d1[0], op[i].op.box.d1[1], op[i].op.box.d1[2]);
 	matrix_mult(peek(systems), tmp);
-	draw_polygons(tmp, s, zb, view, light, ambient,
+	draw_polygons(tmp, t, zb, view, light, ambient,
 		      areflect, dreflect, sreflect);
 	tmp->lastcol = 0;
 	break;
+	
       case SPHERE:
-	add_sphere(tmp, op[i].d[0], op[i].d[1], op[i].d[2], r, step_3d);
+	add_sphere(tmp, op[i].op.sphere.d[0], op[i].op.sphere.d[1], op[i].op.sphere.d[2], op[i].op.sphere.r, step_3d);
 	matrix_mult(peek(systems), tmp);
-	draw_polygons(tmp, s, zb, view, light, ambient,
+	draw_polygons(tmp, t, zb, view, light, ambient,
 		      areflect, dreflect, sreflect);
 	tmp->lastcol = 0;
         break;
+	
       case TORUS:
-	add_torus(tmp, op[i].d[0], op[i].d[1], op[i].d[2],
-		  op[i].r0, op[i].r1, step_3d);
+	add_torus(tmp, op[i].op.torus.d[0], op[i].op.torus.d[1], op[i].op.torus.d[2], op[i].op.torus.r0, op[i].op.torus.r1, step_3d);
 	matrix_mult(peek(systems), tmp);
-	draw_polygons(tmp, s, zb, view, light, ambient,
+	draw_polygons(tmp, t, zb, view, light, ambient,
 		      areflect, dreflect, sreflect);
 	tmp->lastcol = 0;
 	break;
+	
       case DISPLAY:
-        display(s);
+        display(t);
 	break;
       case SAVE:
-        save_extension(s, op[i].p);
+        save_extension(t, op[i].op.save.p->name);
 	break;
     }
   }
