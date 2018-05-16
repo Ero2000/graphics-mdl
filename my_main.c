@@ -107,7 +107,6 @@ void my_main() {
   //reads the script (parses), fills symtab and op[] < can be found in parser.h
   //command op[MAX_COMMANDS/512], and SYMTAB symtab[MAX_SYMBOLS/512]
   //Make sure to CLEAR TMP BEFORE TRANSFORMATIONS AND POLYGONS WITH LASTCOL = 0
-  int i;
   for (i = 0; i < lastop; i++){
     switch(op[i].opcode){
       case PUSH:
@@ -116,8 +115,59 @@ void my_main() {
       case POP:
 	pop(systems);
 	break;
-      case sphere:
-	add_sphere(tmp, op[i].d[0], op[i].d[1], op[i].d[2], r);
+      case ROTATE:
+	theta = op[i].degrees * (M_PI / 180);
+	if (op[i].axis == 0){
+	  tmp = make_rotX(theta);
+	}
+	else if (op[i].axis == 1){
+	  tmp = make_rotY(theta);
+	}
+	else if (op[i].axis == 2){
+	  tmp = make_rotZ(theta);
+	}
+	matrix_mult(peek(systems), tmp);
+	copy_matrix(tmp, peek(systems));
+	break;
+      case MOVE:
+	tmp = make_translate( op[i].d[0], op[i].d[1], op[i].d[2] );
+	matrix_mult(peek(systems), tmp);
+	copy_matrix(tmp, peek(systems));
+	break;
+      case SCALE:
+	tmp = make_scale( op[i].d[0], op[i].d[1], op[i].d[2] );
+        matrix_mult(peek(systems), tmp);
+	copy_matrix(tmp, peek(systems));
+	break;
+      case BOX:
+	add_box(tmp, op[i].d0[0], op[i].d0[1], op[i].d0[2],
+		op[i].d1[0], op[i].d1[1], op[i].d1[2]);
+	matrix_mult(peek(systems), tmp);
+	draw_polygons(tmp, s, zb, view, light, ambient,
+		      areflect, dreflect, sreflect);
+	tmp->lastcol = 0;
+	break;
+      case SPHERE:
+	add_sphere(tmp, op[i].d[0], op[i].d[1], op[i].d[2], r, step_3d);
+	matrix_mult(peek(systems), tmp);
+	draw_polygons(tmp, s, zb, view, light, ambient,
+		      areflect, dreflect, sreflect);
+	tmp->lastcol = 0;
+        break;
+      case TORUS:
+	add_torus(tmp, op[i].d[0], op[i].d[1], op[i].d[2],
+		  op[i].r0, op[i].r1, step_3d);
+	matrix_mult(peek(systems), tmp);
+	draw_polygons(tmp, s, zb, view, light, ambient,
+		      areflect, dreflect, sreflect);
+	tmp->lastcol = 0;
+	break;
+      case DISPLAY:
+        display(s);
+	break;
+      case SAVE:
+        save_extension(s, op[i].p);
+	break;
     }
   }
 }
