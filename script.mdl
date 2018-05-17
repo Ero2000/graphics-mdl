@@ -1,0 +1,79 @@
+//This file contains various configurations of commands in mdl
+//Its purpose is to verify that your compiler recognizes valid commands
+//The image it creates is unimportant
+
+//view
+push
+move 250 250 0
+//base
+push
+scale 1.25 .8 .9
+sphere 0 0 0 150
+pop
+//body
+push
+scale .8 2.5 .5
+move 0 -235 0
+sphere 0 0 0 200
+pop
+//ears
+push
+push
+rotate z 80
+move -20 180 20
+scale 1.8 2 1
+box 0 0 0 70 70 30
+pop
+rotate z -80
+move -110 180 20
+scale 1.8 2 1
+box 0 0 0 70 70 30
+pop
+//bow
+push
+sphere 100 70 100 50
+push
+rotate x 90
+rotate y -25
+push
+scale .95 1 .75
+torus -25 100 -160 30 30
+pop
+push
+scale .95 1 .75
+torus 150 100 -140 30 30
+pop
+pop
+//face
+//eyes
+push
+scale .25 .5 .05
+sphere -250 25 5000 50
+sphere 250 25 5000 50
+pop
+//nose and whiskers
+push
+scale .35 .25 .05
+sphere 0 -225 5000 50
+pop
+push
+box -235 10 100 125 10 10
+box 115 10 100 125 10 10
+push
+rotate z -5
+box 135 -20 100 90 10 10
+pop
+push
+rotate z 5
+box -225 -20 100 90 10 10
+pop
+push
+rotate z -20
+box 135 -20 100 110 10 10
+pop
+push
+rotate z 20
+box -245 -20 100 110 10 10
+pop
+display
+save garfield.png

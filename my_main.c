@@ -171,6 +171,12 @@ void my_main() {
 		      areflect, dreflect, sreflect);
 	tmp->lastcol = 0;
 	break;
+
+      case LINE:
+	add_edge(tmp, op[i].op.line.p0[0], op[i].op.line.p0[1], op[i].op.line.p0[2], op[i].op.line.p1[0], op[i].op.line.p1[1], op[i].op.line.p1[2]);
+	matrix_mult(peek(systems), tmp);
+	draw_lines(tmp, t, zb, g);
+	tmp->lastcol = 0;
 	
       case DISPLAY:
         display(t);
